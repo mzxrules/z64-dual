@@ -1,0 +1,24 @@
+
+    if (pad_pressed & DPAD_D)
+    {
+        /* reset cp0 status */
+        __asm__ volatile ("la    $t0, 0b00110100000000000000000000000000;"
+            "mtc0  $t0, $12;");
+        /* halt rsp */
+        __asm__ volatile ("la    $t0, 0xA4040000;"
+            "la    $t1, 0b0101010101010101010101110;"
+            "sw    $t1, 0x0010($t0);");
+
+
+        /* flush data cache */
+        for (uint32_t p = 0x80000000; p < 0x80800000; p += 0x10)
+            __asm__ volatile ("cache 0x19, 0x0000(%0);" :: "r"(p));
+
+
+        /* copy pif code to rsp imem */
+        memcpy((void*)0xA4001000, reset_imem, sizeof(reset_imem));
+        /* copy cic boot code to rsp dmem */
+        memcpy((void*)0xA4000040, (void*)0xB0000040, 0x0FC0);
+
+        reset_main();
+    }

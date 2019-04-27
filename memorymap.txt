@@ -1,0 +1,18 @@
+Rom G0 is Ocarina of Time
+Rom G1 is Majora's Mask
+
+At ROM address 3FFF0000 (both uncompressed and compressed) is a 
+structure containing the following:
+0x0000 // G1 0x40 byte rom header
+0x0040 // G0 dmadata
+0x6240 // G1 dmadata
+
+makerom.asm contains the rom entrypoint code. This branches into 
+a payload replacing rom G0's original dmadata, which is part of the
+first megabyte of the rom loaded into memory after the pifrom boot.
+A temporary 0x2000 byte stack is allocated to 80780000
+
+boot.asm (top level) contains the logic used determine which
+game to boot into. It copies itself into address 80700000 and then
+jumps inside, processing the rom select logic. Copying allows it
+to swap into MM if necessary

@@ -328,3 +328,10 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+/c
+/build
+/roms
+*.[nz]64
+*.[nz]64.back
+*.sra
